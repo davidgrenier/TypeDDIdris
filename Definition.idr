@@ -1,6 +1,7 @@
 module Definition
 
 import Data.Strings
+import Utils.Prelude
 
 invert : Bool -> Bool
 invert True = False

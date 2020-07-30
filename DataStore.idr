@@ -3,6 +3,7 @@ module Main
 import Data.Vect
 import System.REPL
 import Data.Strings
+import Utils.Maybe
 
 infixl 5 |>
 infixl 5 >>
@@ -36,11 +37,15 @@ addToStore item store =
 data Command
     = Add String
     | Get Integer
+    | Size
+    | Search String
     | Quit
 
 parseCommand : String -> String -> Maybe Command
 parseCommand "quit" _ = Just Quit
 parseCommand "add" text = Just (Add text)
+parseCommand "search" text = Just (Search text)
+parseCommand "size" _ = Just Size
 parseCommand "get" id =
     if all isDigit (unpack id)
     then Just $ Get (cast id)
@@ -60,13 +65,42 @@ getEntry : DataStore -> Integer -> Maybe (String, DataStore)
 getEntry store id =
     case integerToFin id (size store) of
     Nothing => Just ("Out of range\n", store)
-    Just entry  => Just (index entry (items store) ++ "\n", store)
+    Just entry => Just (index entry (items store) ++ "\n", store)
+
+sub : Nat -> Nat -> Nat
+sub 0 0 = 0
+sub 0 (S k) = 0
+sub x@(S k) 0 = x
+sub (S k) (S j) = sub k j
+
+searchEntry : String -> Vect n String -> Maybe String
+searchEntry term items =
+    search items Nothing
+    where
+        search : Vect k String -> Maybe String -> Maybe String
+        search [] result = result
+        search xs@(y :: ys) result =
+            if isInfixOf term y
+            then
+                sub (length items) (length xs)
+                |> show
+                |> (++ ": " ++ y ++ "\n")
+                |> (orElse "" result ++)
+                |> Just
+                |> search ys
+            else
+                search ys result
 
 loop : DataStore -> String -> Maybe (String, DataStore)
 loop store input =
     case parse input of
     Nothing => Just ("Invalid command\n", store)
     Just Quit => Nothing
+    Just Size => Just ("DataStore has " ++ show (size store) ++ " entries\n", store)
+    Just (Search substring) =>
+        case searchEntry substring (items store) of
+        Nothing => Just ("No entries found\n", store)
+        Just result => Just (result, store)
     Just (Get id) => getEntry store id
     Just (Add item) =>
         Just ("ID " ++ show (size store) ++ "\n", addToStore item store)
