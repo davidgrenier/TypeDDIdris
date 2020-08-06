@@ -62,6 +62,3 @@ fmt acc [] = acc
 fmt acc ('%' :: 'd' :: rest) = \d => fmt (acc ++ cast d) rest
 fmt acc ('%' :: 's' :: rest) = \s => fmt (acc ++ s) rest
 fmt acc (c :: rest) = fmt (acc ++ cast c) rest
-
--- sprintf : (format : String) -> Tprintf (unpack format)
--- sprintf format = fmt "" (unpack format)
