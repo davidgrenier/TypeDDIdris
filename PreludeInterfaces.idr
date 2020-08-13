@@ -51,18 +51,18 @@ eval (Mul x y) = eval x * eval y
 eval (Div x y) = eval x `div` eval y
 eval (Abs x) = abs (eval x)
 
-export
+public export
 Num ty => Num (Expr ty) where
     (+) = Add
     (*) = Mul
     fromInteger = Val . fromInteger
 
-export
+public export
 Neg ty => Neg (Expr ty) where
     negate x = 0 - x
     (-) = Sub
 
-export
+public export
 Abs ty => Abs (Expr ty) where
     abs = Abs
 

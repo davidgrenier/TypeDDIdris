@@ -25,6 +25,7 @@ listToTree [1,4,3,5,2]
 treeToList $ listToTree [4,1,8,7,2,3,9,5,6]
 -}
 
+public export
 data Expr
     = Val Int
     | Add Expr Expr
