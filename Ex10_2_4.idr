@@ -73,3 +73,16 @@ vList (x :: xs) with (snocList xs)
     vList (x :: []) | Empty = VOne x
     vList (x :: (ys ++ [y])) | (Snoc y ys rec) =
         VPair x y ys (vList ys)
+
+palindrome : List Char -> Bool
+palindrome xs with (vList xs)
+palindrome [] | VEmpty = True
+palindrome [x] | (VOne x) = True
+palindrome (left :: (ys ++ [right])) | (VPair left right ys rec) =
+    left == right && palindrome ys
+
+{-
+palindrome (unpack "abccba")
+palindrome (unpack "abcba")
+palindrome (unpack "abcb")
+-}
