@@ -1,4 +1,4 @@
-module Exercices2
+module Ex2
 
 import Data.List
 import Data.Strings

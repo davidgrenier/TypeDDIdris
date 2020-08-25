@@ -1,4 +1,4 @@
-module Exercices4_2
+module Ex4_2
 
 import Data.Vect
 
