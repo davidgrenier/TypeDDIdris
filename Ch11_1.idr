@@ -10,13 +10,15 @@ module Ch11_1
 --         label x [] = []
 --         label x (y :: xs) = (x, y) :: label (x+1) xs
 
+public export
 data InfList : Type -> Type where
     (::) : (value : a) -> Inf (InfList a) -> InfList a
 
 %name InfList xs, ys, zs
 
+export
 countFrom : Nat -> InfList Nat
-countFrom x = x :: countFrom (S x)
+countFrom x = x :: Delay (Ch11_1.countFrom (S x))
 
 label : List a -> List (Nat, a)
 label =
@@ -26,6 +28,7 @@ label =
         lbl xs [] = []
         lbl (num :: nums) (x :: xs) = (num, x) :: lbl nums xs
 
+export
 getPrefix : Nat -> InfList a -> List a
 getPrefix 0 xs = []
 getPrefix (S k) (value :: xs) = value :: getPrefix k xs
